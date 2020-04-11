@@ -28,13 +28,13 @@ namespace HeroApp.Wasm
             builder.Services.AddScoped<IBaseUrlService, BaseUrlService>();
             builder.Services.AddScoped<ITokenService, TokenService>();
           
-            builder.Services.AddHttpClientService(c =>
-            {
-                c.TimeOut = 5000;
-                c.AddBeforeRequest<PreRequestTest>();
-                //c.AddAfterRequest<UnauthorizedResponse>();
+            // builder.Services.AddHttpClientService(c =>
+            // {
+            //     c.TimeOut = 5000;
+            //     c.AddBeforeRequest<PreRequestTest>();
+            //     //c.AddAfterRequest<UnauthorizedResponse>();
 
-            });
+            // });
             builder.Services.AddBlazoredLocalStorage();
             //builder.Services.AddFormValidation(config => config.AddDataAnnotationsValidation());
             builder.Services.AddFormValidation(config => config.AddFluentValidation(typeof(AppShared.Class1).Assembly));
