@@ -5,11 +5,11 @@ WORKDIR /source
 
 COPY src/HeroApp.Api/*.csproj HeroApp.Api/.
 COPY src/HeroApp.App/*.csproj HeroApp.App/.
-COPY HeroApp.AppShared/*.csproj HeroApp.AppShared/.
-COPY HeroApp.Domain/*.csproj HeroApp.Domain/.
-COPY HeroApp.Infra/*.csproj HeroApp.Infra/.
-COPY HeroApp.Wasm/*.csproj HeroApp.Wasm/.
-COPY HeroAppSolution.sln .
+COPY src/HeroApp.AppShared/*.csproj HeroApp.AppShared/.
+COPY src/HeroApp.Domain/*.csproj HeroApp.Domain/.
+COPY src/HeroApp.Infra/*.csproj HeroApp.Infra/.
+COPY src/HeroApp.Wasm/*.csproj HeroApp.Wasm/.
+COPY src/HeroAppSolution.sln .
 
 RUN dotnet restore
 
