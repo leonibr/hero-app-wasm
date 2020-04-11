@@ -1,15 +1,19 @@
 version: '2.0'
 services:
   api:
-    container_name: heroappwasm/backend
+    container_name: heroappbackend
     restart: always
-    build: src/HeroApp.Api
+    build: 
+      context: .
+      dockerfile: src/HeroApp.Api/Dockerfile
     ports:
       - "5000:5000"
 
   wasm:
-    container_name: heroappwasm/frontend
-    build: src/HeroApp.Wasm
+    container_name: heroappwasm
+    build: 
+        context: .
+        dockerfile: src/HeroApp.Wasm/Dockerfile
     ports: 
       - "80"
     depends_on:
