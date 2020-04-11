@@ -3,12 +3,12 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS base
 
 WORKDIR /source
 
-COPY HeroApp.Api/*.csproj HeroApp.Api/.
-COPY HeroApp.App/*.csproj HeroApp.App/.
-COPY HeroApp.AppShared/*.csproj HeroApp.AppShared/.
-COPY HeroApp.Domain/*.csproj HeroApp.Domain/.
-COPY HeroApp.Infra/*.csproj HeroApp.Infra/.
-COPY HeroApp.Wasm/*.csproj HeroApp.Wasm/.
+COPY src/HeroApp.Api/HeroApp.Api.csproj src/HeroApp.Api/HeroApp.Api.csproj
+COPY src/HeroApp.App/HeroApp.App.csproj src/HeroApp.App/HeroApp.App.csproj
+COPY src/HeroApp.AppShared/HeroApp.AppShared.csproj src/HeroApp.AppShared/HeroApp.AppShared.csproj
+COPY src/HeroApp.Domain/HeroApp.Domain.csproj src/HeroApp.Domain/HeroApp.Domain.csproj
+COPY src/HeroApp.Infra/HeroApp.Infra.csproj src/HeroApp.Infra/HeroApp.Infra.csproj
+COPY src/HeroApp.Wasm/HeroApp.Wasm.csproj src/HeroApp.Wasm/HeroApp.Wasm.csproj
 COPY HeroAppSolution.sln .
 
 RUN dotnet restore
@@ -18,8 +18,8 @@ COPY . .
 FROM base as front
 WORKDIR /front-source
 COPY --from=base /source /front-source
-WORKDIR /front-source/HeroApp.Wasm
-RUN dotnet publish -c Release -o /build
+WORKDIR /front-source/src/HeroApp.Wasm
+RUN dotnet publish --no-restore -c Release -o /build
 WORKDIR /build
 
 

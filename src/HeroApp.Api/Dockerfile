@@ -31,6 +31,6 @@ COPY --from=back /build .
 ENV VIRTUAL_HOST heroappwasm-back.marques.top
 ENV LETSENCRYPT_HOST heroappwasm-back.marques.top
  
-EXPOSE 5000
+EXPOSE 80
 
 CMD ["dotnet", "HeroApp.Api.dll"]
