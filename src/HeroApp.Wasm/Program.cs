@@ -32,7 +32,7 @@ namespace HeroApp.Wasm
             {
                 c.TimeOut = 5000;
                 c.AddBeforeRequest<PreRequestTest>();
-                c.AddAfterRequest<UnauthorizedResponse>();
+                //c.AddAfterRequest<UnauthorizedResponse>();
 
             });
             builder.Services.AddBlazoredLocalStorage();

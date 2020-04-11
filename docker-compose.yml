@@ -1,0 +1,18 @@
+version: '2.0'
+services:
+  api:
+    container_name: heroappwasm/backend
+    restart: always
+    context: .
+    build: src/HeroApp.Api
+    ports:
+      - "5000:5000"
+
+  wasm:
+    container_name: heroappwasm/frontend
+    context: .
+    build: src/HeroApp.Wasm
+    ports: 
+      - "80"
+    depends_on:
+      - backend    

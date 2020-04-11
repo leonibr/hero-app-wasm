@@ -224,10 +224,10 @@ namespace HeroApp.AppShared.Services
             foreach (var after in configOptions.BeforeRequests)
             {
                 var afterRequest = (IAfterRequest)serviceProvider.GetService(after);
-                await afterRequest.Handle(response);
+                response = await afterRequest.Handle(response);
             }
 
-            return
+           return await response.ToObject<TResponse>();
 
         }
 

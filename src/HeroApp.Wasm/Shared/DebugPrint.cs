@@ -14,6 +14,7 @@ namespace HeroApp.Wasm.Shared
 #endif
 #if !DEBUG
         private static string env = "Release";
+        private static string _scopeName = "R";
 #endif
         private static string Format(string text)
         {

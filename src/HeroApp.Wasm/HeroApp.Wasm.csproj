@@ -5,7 +5,7 @@
     <RazorLangVersion>3.0</RazorLangVersion>
    
      
-    
+    <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
   <ItemGroup>
