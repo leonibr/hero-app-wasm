@@ -20,7 +20,7 @@ WORKDIR /back-source
 COPY --from=base /source /back-source
 WORKDIR /back-source/src/HeroApp.Api
 
-RUN dotnet publish --no-restore --no-build -c Release -o /build
+RUN dotnet publish --no-restore -c Release -o /build
 
 WORKDIR /build
 
