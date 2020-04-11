@@ -3,12 +3,12 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS base
 
 WORKDIR /source
 
-COPY src/HeroApp.Api/*.csproj HeroApp.Api/.
-COPY src/HeroApp.App/*.csproj HeroApp.App/.
-COPY src/HeroApp.AppShared/*.csproj HeroApp.AppShared/.
-COPY src/HeroApp.Domain/*.csproj HeroApp.Domain/.
-COPY src/HeroApp.Infra/*.csproj HeroApp.Infra/.
-COPY src/HeroApp.Wasm/*.csproj HeroApp.Wasm/.
+COPY src/HeroApp.Api/*.csproj src/HeroApp.Api/.
+COPY src/HeroApp.App/*.csproj src/HeroApp.App/.
+COPY src/HeroApp.AppShared/*.csproj src/HeroApp.AppShared/.
+COPY src/HeroApp.Domain/*.csproj src/HeroApp.Domain/.
+COPY src/HeroApp.Infra/*.csproj src/HeroApp.Infra/.
+COPY src/HeroApp.Wasm/*.csproj src/HeroApp.Wasm/.
 COPY HeroAppSolution.sln .
 
 RUN dotnet restore
