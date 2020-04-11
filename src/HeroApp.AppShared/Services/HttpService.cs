@@ -29,9 +29,11 @@ namespace HeroApp.AppShared.Services
 
     public class HttpConfigOptions : IHttpConfigOptions
     {
-        public List<Type> AfterRequests { get; }
-        public List<Type> BeforeRequests { get; }
+        private readonly List<Type> beforeRequests = new List<Type>();
+        private readonly List<Type> afterRequests = new List<Type>();
 
+        public List<Type> AfterRequests => afterRequests; 
+        public List<Type> BeforeRequests => beforeRequests;
 
         /// <summary>
         /// Http request timeout
