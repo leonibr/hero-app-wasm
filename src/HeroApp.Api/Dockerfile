@@ -3,17 +3,17 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS base
 
 WORKDIR /source
 
-COPY HeroApp.Api/*.csproj HeroApp.Api/.
-COPY HeroApp.App/*.csproj HeroApp.App/.
-COPY HeroApp.AppShared/*.csproj HeroApp.AppShared/.
-COPY HeroApp.Domain/*.csproj HeroApp.Domain/.
-COPY HeroApp.Infra/*.csproj HeroApp.Infra/.
-COPY HeroApp.Wasm/*.csproj HeroApp.Wasm/.
-COPY HeroAppSolution.sln .
+COPY *.csproj HeroApp.Api/.
+COPY ../HeroApp.App/*.csproj HeroApp.App/.
+COPY ../HeroApp.AppShared/*.csproj HeroApp.AppShared/.
+COPY ../HeroApp.Domain/*.csproj HeroApp.Domain/.
+COPY ../HeroApp.Infra/*.csproj HeroApp.Infra/.
+COPY ../HeroApp.Wasm/*.csproj HeroApp.Wasm/.
+COPY ../HeroAppSolution.sln .
 
 RUN dotnet restore
 
-COPY . .
+COPY ../. .
 
 FROM base as back
 WORKDIR /back-source
