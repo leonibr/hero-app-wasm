@@ -9,7 +9,7 @@ COPY src/HeroApp.AppShared/*.csproj HeroApp.AppShared/.
 COPY src/HeroApp.Domain/*.csproj HeroApp.Domain/.
 COPY src/HeroApp.Infra/*.csproj HeroApp.Infra/.
 COPY src/HeroApp.Wasm/*.csproj HeroApp.Wasm/.
-COPY src/HeroAppSolution.sln .
+COPY HeroAppSolution.sln .
 
 RUN dotnet restore
 
