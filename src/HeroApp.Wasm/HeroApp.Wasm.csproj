@@ -3,15 +3,21 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <RazorLangVersion>3.0</RazorLangVersion>
-   
-     
     <BlazorWebAssemblyEnableLinking>false</BlazorWebAssemblyEnableLinking>
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.Development.json" />
+    <Content Remove="appsettings.Production.json" />
+    <Content Remove="appsettings.json" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="2.1.5" />
     <PackageReference Include="AutoMapper" Version="9.0.0" />
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />    
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="PeterLeslieMorris.Blazor.FluentValidation" Version="1.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0-preview3.20168.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="3.2.0-preview3.20168.3" />
@@ -31,4 +37,24 @@
   <ItemGroup>
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
+  <!--<Target Name="Lombada" BeforeTargets="Build">
+    <Exec Command="echo '$(ASPNETCORE_ENVIRONMENT)'" />
+  </Target>-->
+
+  <ItemGroup>
+    
+    <!--<Exec Command="echo 'SUPOSES EMBED FILES'"  Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Development'"/>-->
+
+    <EmbeddedResource Include="appsettings.Development.json" Condition="'$(Configuration)' == 'Debug'">
+      <LogicalName>appsettings.json</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="appsettings.Production.json" Condition="'$(Configuration)' == 'Release'">
+      <LogicalName>appsettings.json</LogicalName>
+      
+    </EmbeddedResource>
+  </ItemGroup>
+  <Target Name="EmbedLocal" BeforeTargets="ResolveProjectReferences">
+    <Exec Command="echo 'ResolveProjectReferences $(ASPNETCORE_ENVIRONMENT)'" />
+  </Target>
+
 </Project>

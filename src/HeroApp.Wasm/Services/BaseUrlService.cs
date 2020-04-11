@@ -1,4 +1,7 @@
 ﻿using HeroApp.AppShared.Services;
+using HeroApp.Wasm.Shared;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +11,14 @@ namespace HeroApp.Wasm.Services
 {
     public class BaseUrlService : IBaseUrlService
     {
-        public BaseUrlService()
+        
+        private string url;
+
+        public BaseUrlService(IClientSettings clientSettings)
         {
-            Console.WriteLine("BaseUrlService: Initialized");
+            this.url = clientSettings.BaseUrl ?? "http://broken-home.com";
+            DebugPrint.Log($"BaseUrlService initializaed with {url}");
         }
-        public Uri Uri => new Uri("https://localhost:5001");
+        public Uri Uri => new Uri(url);
     }
 }
