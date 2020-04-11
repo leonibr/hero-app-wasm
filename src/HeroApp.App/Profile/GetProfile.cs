@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using FluentValidation;
+using HeroApp.Domain;
 using HeroApp.Infra;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -18,26 +19,46 @@ namespace HeroApp.App.Profile
             
 
         public class Handler : IRequestHandler<AppShared.Profile.GetProfile.Query, 
-                                            IEnumerable<AppShared.Profile.GetProfile.Result>>
+                                            ApiResponse<IEnumerable<AppShared.Profile.GetProfile.Result>>>
         {
-            private readonly IHeroContext heroContext;
+            private readonly HeroContext heroContext;
+            private readonly IMapper mapper;
             private readonly IConfigurationProvider configProvider;
 
-            public Handler(IHeroContext heroContext, IConfigurationProvider configProvider)
+            public Handler(HeroContext heroContext, IMapper mapper, IConfigurationProvider configProvider)
             {
                 this.heroContext = heroContext;
+                this.mapper = mapper;
                 this.configProvider = configProvider;
             }
-            public async Task<IEnumerable<AppShared.Profile.GetProfile.Result>> Handle(AppShared.Profile.GetProfile.Query request, CancellationToken cancellationToken)
+            public async Task<ApiResponse<IEnumerable<AppShared.Profile.GetProfile.Result>>> 
+                Handle(AppShared.Profile.GetProfile.Query request, CancellationToken cancellationToken)
             {
-                var ongId = "AAAABBBB";
-                var incidents = await heroContext
-                   .Incidents
-                   .Where(c => c.Ong_Id == ongId)
-                   .ProjectTo<AppShared.Profile.GetProfile.Result>(configProvider)
-                   .ToListAsync();
+                var owner = await heroContext.Users.Where(c => c.Id == request.UserId)
+                    .Include(c => c.MyOngs)
+                    .ThenInclude(c => c.Incidents)
+                    //.Select(c => c.MyOngs.FirstOrDefault())
+                    //.Select(c => c.Incidents)
+                  //  .ProjectTo<IEnumerable<AppShared.Profile.GetProfile.Result>>(configProvider)
+                    .FirstOrDefaultAsync();
+                var incidents = owner.MyOngs.FirstOrDefault()
+                    .Incidents
+                    .Select(c => c);
+                    
 
-                return incidents;
+                var listResult = mapper.Map<IEnumerable<Domain.Incident>, IEnumerable<AppShared.Profile.GetProfile.Result>>(incidents);
+               
+
+                return ApiResponse<IEnumerable<AppShared.Profile.GetProfile.Result>>.SuccessFrom(listResult);
+            }
+        }
+
+        public class Mapper: AutoMapper.Profile
+        {
+            public Mapper()
+            {
+
+                CreateMap<Domain.Incident, AppShared.Profile.GetProfile.Result>();
             }
         }
 

@@ -7,11 +7,13 @@ namespace HeroApp.AppShared.Services
 {
     public interface IHttpService
     {
-        Task<T> Get<T>(params string[] path) where T: class;
-        Task<T> Post<T>(object model, params string[] path) where T : class;
+        event EventHandler<IsMakingRequestEventArgs> IsMakingRequest;
 
-        Task<T> Put<T>(object model, params string[] path) where T : class;
-        Task<T> Delete<T>(params string[] path) where T : class;
+        Task<TResponse> Get<TResponse>(params string[] path) where TResponse: class;
+        Task<TResponse> Post<TRequest, TResponse>(TRequest model, params string[] path) where TRequest : class where TResponse : class;
+
+        Task<TResponse> Put<TRequest, TResponse>(TRequest model, params string[] path) where TRequest : class where TResponse : class;
+        Task<TResponse> Delete<TResponse>(params string[] path) where TResponse : class;
 
     }
 }

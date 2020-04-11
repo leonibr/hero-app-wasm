@@ -26,11 +26,14 @@ namespace HeroApp.App
             services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<IAuthUserService, AuthUserService>();
+            services.AddSingleton<IGenerateIdService, GenerateIdService>();
+
 
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestPerformanceBehaviour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DbTransactionBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(RequestValidationBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(DbTransactionBehaviour<,>));
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
 
             services.AddHttpContextAccessor();

@@ -14,7 +14,7 @@ namespace HeroApp.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class OngsController : ControllerBase
+    public class OngsController : HeroBaseController
     {
         private readonly IHeroContext _context;
 
@@ -93,36 +93,13 @@ namespace HeroApp.Api.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
         [HttpPost]
-        public async Task<ActionResult<Ong>> PostOng(PostOngCommand command)
+        public async Task<ActionResult<Ong>> PostOng(
+            [FromBody]
+            AppShared.Ong.PostOng.Command command)
         {
-            Ong ong = new Ong()
-            {
-                Name = command.Name,
-                Email = command.Email,
-                City = command.City,
-                State = command.Uf,
-                WhatsApp = command.WhatsApp
-            };
+            var result = await Mediator.Send(command);
 
-            ong.Id = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 5);
-            _context.Ongs.Add(ong);
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (OngExists(ong.Id))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetOng", new { id = ong.Id }, ong);
+            return CreatedAtAction("PostOng", result);
         }
         /*
         // DELETE: ongs/5
@@ -157,13 +134,6 @@ namespace HeroApp.Api.Controllers
         public string Uf { get; set; }
     }
 
-    public class PostOngCommand
-    {
-        public string Name { get; set; }
-        public string Email { get; set; }
-        public string WhatsApp { get; set; }
-        public string City { get; set; }
-        public string Uf { get; set; }
-    }
+ 
 
 }

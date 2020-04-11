@@ -1,0 +1,13 @@
+﻿
+ul.validation-errors,
+div.validation-message {
+    color: #e02041;
+    font-size: 0.8rem;
+}
+ul.validation-errors > li.validation-message,
+div.validation-message {
+    list-style: none;
+    padding: 5px 5px;
+    animation: slide-up 0.4s ease;
+     
+}

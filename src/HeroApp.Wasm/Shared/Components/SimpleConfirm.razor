@@ -1,0 +1,29 @@
+﻿@inject Radzen.DialogService dialogService
+@using Radzen
+
+<RadzenCard Style="padding: 20px;">
+    <p Style="margin-bottom: 10px;">
+        @if (Description != null)
+        {
+
+            @foreach (var item in Description)
+            {
+            <p style="font-size:0.9rem">@item</p>
+            }
+        }
+        </p>
+        <div class="simpleconfirm-rowbutton">        
+                <button class="button" @onclick="@(()=> dialogService.Close(true))"  >OK</button>
+                <button class="button secondary" @onclick="@(()=> dialogService.Close(false))"  style="width: 150px">Cancel</button>
+        </div>
+    </RadzenCard>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; } = "";
+
+    [Parameter]
+    public IEnumerable<string> Description { get; set; } = new string[] { };
+
+}

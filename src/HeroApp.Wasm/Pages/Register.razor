@@ -1,0 +1,206 @@
+﻿@page "/register"
+@inherits OwningComponentBase<IHttpService>
+@inject Radzen.DialogService dialogService
+@inject NavigationManager Navigator
+@inject ITokenService tokenService
+
+@using AppShared.Authentication.Register
+@using HeroApp.Domain
+<style>
+    .register-container {
+        width: 100%;
+        max-width: 1120px;
+        height: 100vh;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .register-container .content {
+            width: 100%;
+            padding: 96px;
+            background: #f0f0f5;
+            box-shadow: 0 0 100px rgba(0, 0, 0,0.1);
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-content: center;
+        }
+
+            .register-container .content section {
+                width: 100%;
+                max-width: 380px;
+            }
+
+                .register-container .content section h1 {
+                    margin: 64px 0 32px;
+                    font-size: 32px;
+                }
+
+                .register-container .content section p {
+                    font-size: 18px;
+                    color: #737380;
+                    line-height: 32px;
+                }
+
+            .register-container .content form {
+                width: 100%;
+                max-width: 450px;
+            }
+
+                .register-container .content form input {
+                    margin-top: 8px;
+                }
+
+                .register-container .content form .input-group {
+                    display: flex;
+                }
+
+                    .register-container .content form .input-group input + input {
+                        margin-left: 8px;
+                    }
+</style>
+<div class="register-container">
+    <div class="content">
+        <section>
+            <Logo />
+            <h1>Registration</h1>
+            <p>
+                Register your Organization, enter and help your incidents to find heroes.
+            </p>
+            <NavLink href="/" class="back-link">
+                <FiArrowLeft Size="16" StrokeColor="#e02041" />
+                Go Back
+            </NavLink>
+        </section>
+        <EditForm Model="registerCommand"
+                  @onsubmit:preventDefault
+                  OnValidSubmit="@HandleRegister" autocomplete="off" novalidate disabled="@isLoading">
+            <PeterLeslieMorris.Blazor.Validation.Validate />
+
+
+
+            <InputText placeholder="Organization"
+                       @bind-Value="registerCommand.Name" disabled="@isLoading" />
+            <ValidationMessage For=@(() => registerCommand.Name) />
+
+            <InputText placeholder="Password"
+                       type="password"
+                       @bind-Value="registerCommand.Password" disabled="@isLoading" />
+            <ValidationMessage For=@(() => registerCommand.Password) />
+
+            <InputText placeholder="Confirm Password"
+                       type="password"
+                       @bind-Value="registerCommand.ConfirmPassword" disabled="@isLoading" />
+            <ValidationMessage For=@(() => registerCommand.ConfirmPassword) />
+
+            <InputText type="email"
+                       placeholder="Email"
+                       @bind-Value="registerCommand.Email" disabled="@isLoading" />
+            <ValidationMessage For=@(() => registerCommand.Email) />
+
+            <InputText type="text"
+                       placeholder="WhatsApp"
+                       @bind-Value="registerCommand.Whatsapp" disabled="@isLoading" />
+            <ValidationMessage For=@(() => registerCommand.Whatsapp) />
+
+
+            <div class="input-group">
+                <InputText type="text"
+                           placeholder="City"
+                           @bind-Value="registerCommand.City" disabled="@isLoading" />
+                <InputText type="text"
+                           placeholder="State"
+                           @bind-Value="registerCommand.State" style="width: 80px" disabled="@isLoading" />
+            </div>
+            <ValidationMessage For=@(() => registerCommand.City) />
+            <ValidationMessage For=@(() => registerCommand.State) />
+
+            <button class="button" type="submit" disabled="@isLoading">
+                <Spinner Size="24" IsLoading="@isLoading" Stroke="4" />
+                Register
+            </button>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+
+    public bool isLoading = false;
+    Command registerCommand = new Command()
+    {
+        Name = "ASDF",
+        Email = "asdf@asdf.com",
+        City = "sadf",
+        ConfirmPassword = "asdfasdf",
+        Password = "asdfasdf",
+        State = "SS",
+        Whatsapp = "asdfasdf"
+    };
+
+
+    void OnMakingRequest(object sender, IsMakingRequestEventArgs args)
+    {
+        isLoading = args.IsLoading;
+        StateHasChanged();
+        Console.WriteLine("isLoading> " + isLoading.ToString());
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Service.IsMakingRequest += OnMakingRequest;
+        await Task.CompletedTask;
+    }
+
+    async Task HandleRegister()
+    {
+
+        var apiResponse = await Service.Post<Command, ApiResponse<Result>>(registerCommand, "/api/authenticate/register");
+
+
+        if (apiResponse.Succeeded)
+        {
+            await tokenService.StoreToken(new AppShared.Model.LocalUserInfo() {
+                Id = apiResponse.Result.UserId,
+                AccessToken = apiResponse.Result.AccessToken
+            });
+
+        }
+
+
+        try
+        {
+
+            var response = await dialogService.OpenAsync<SimpleConfirm>($"Your access is granted!",
+                 new Dictionary<string, object>() { { "Description", new string[] {
+              //  $"The Id: {apiResponse.Result.UserId} is your identifier",
+                "You will need create your incidents. You will be redirected to your Profile page.",
+                "Keep your password safe!"
+             }  } }
+                );
+
+
+            Navigator.NavigateTo("/profile");
+
+        }
+        catch (Exception ex)
+        {
+            DebugPrint.Log("Error on HandleRegister.");
+            DebugPrint.Log($"HandleRegister:: [] \n{ex.Message}");
+
+            Console.WriteLine(ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+
+    }
+
+    public void Dispose()
+    {
+        Service.IsMakingRequest -= OnMakingRequest;
+    }
+
+}

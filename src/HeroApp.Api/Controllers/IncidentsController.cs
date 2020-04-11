@@ -8,10 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Primitives;
 using HeroApp.Infra;
 using HeroApp.Domain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace HeroApp.Api.Controllers
 {
-    [Route("[controller]")]
+   
     public class IncidentsController : HeroBaseController
     {
         private readonly IHeroContext _context;
@@ -68,6 +69,7 @@ namespace HeroApp.Api.Controllers
 
     
         // GET: api/Incidents/5
+        
         [HttpGet("{id}")]
         public async Task<ActionResult<Incident>> GetIncident(long id)
         {
@@ -88,61 +90,41 @@ namespace HeroApp.Api.Controllers
         // POST: api/Incidents
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for
         // more details see https://aka.ms/RazorPagesCRUD.
+        [Authorize]
         [HttpPost]
-        public async Task<ActionResult<Incident>> PostIncident(PostIncidentCommand command)
+        public async Task<ActionResult<ApiResponse<AppShared.Incident.NewIncident.Result>>>
+            PostIncident([FromBody] AppShared.Incident.NewIncident.Command command)
         {
+
             if (CurrentUserService.UserId == string.Empty)
             {
                 return Unauthorized();
             }
-            Incident incident = new Incident()
-            {
-                Title = command.Title,
-                Description = command.Description,
-                Value = command.Value,
-                Ong_Id = CurrentUserService.UserId
-            };
-            _context.Incidents.Add(incident);
-            await _context.SaveChangesAsync();
+            command.UserId = CurrentUserService.UserId;
+            var response =await Mediator.Send(command);
 
-            return CreatedAtAction("GetIncident", new { id = incident.Id }, incident);
+            return CreatedAtAction("PostIncident", response);
         }
 
 
 
 
-        // DELETE: api/Incidents/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Incident>> DeleteIncident(long id)
+        public async Task<ActionResult<ApiResponse<AppShared.Incident.Delete.Result>>>
+    DeleteIncident(AppShared.Incident.Delete.Query query)
         {
-
-            var incident = await _context.Incidents
-                .Where(i => i.Ong_Id == CurrentUserService.UserId && i.Id == id)
-                .FirstOrDefaultAsync();
-            if (incident == null)
+            var response = await Mediator.Send(query);
+            if (!response.Succeeded)
             {
-                return NotFound();
+                return NotFound(response);
             }
-
-            _context.Incidents.Remove(incident);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            return Ok(response);
         }
 
-        private bool IncidentExists(long id)
-        {
-            return _context.Incidents.Any(e => e.Id == id);
-        }
-    }
-
-    public class PostIncidentCommand
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Value { get; set; }
 
     }
+
+
 
     public class GetIncidentsQuery
     {

@@ -12,7 +12,7 @@ namespace HeroApp.AppShared.Profile
 {
     public class GetProfile
     {
-        public class Query: IRequest<IEnumerable<AppShared.Profile.GetProfile.Result>>
+        public class Query: IRequest<ApiResponse<IEnumerable<AppShared.Profile.GetProfile.Result>>>
         {
             
             public string UserId { get; set; }
@@ -22,14 +22,12 @@ namespace HeroApp.AppShared.Profile
         {
             public QueryValidation()
             {
-                RuleFor(q => q.UserId).Length(8).WithMessage("The Ong Id needs to have exactly 8 letters/numbers");
+                RuleFor(q => q.UserId).NotEmpty();
             }
-
-
 
         }
 
-        public class Result: IMapFrom<Incident>
+        public class Result
         {
             public long Id { get; set; }
             public string Title { get; set; }
@@ -37,6 +35,15 @@ namespace HeroApp.AppShared.Profile
             public string Value { get; set; }
             public object Ong_Id { get; set; }
         }  
+
+
+        public class Mapper: AutoMapper.Profile
+        {
+            public Mapper()
+            {
+                CreateMap<Domain.Incident, Result>().ReverseMap();
+            }
+        }
 
     
     }

@@ -1,0 +1,90 @@
+﻿@page "/incidents/new"
+@inherits OwningComponentBase<IHttpService>
+<style>
+
+
+.new-incident-container {
+    width: 100%;
+    max-width: 1120px;
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.new-incident-container .content {
+    width: 100%;
+    padding: 96px;
+    background: #f0f0f5;
+    box-shadow: 0 0 100px rgba(0, 0, 0,0.1);
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.new-incident-container .content section {
+    width: 100%;
+    max-width: 380px;
+}
+
+.new-incident-container .content section h1 {
+margin: 64px 0 32px;
+font-size: 32px;
+}
+
+.new-incident-container .content section p {
+    font-size: 18px;
+    color: #737380;
+    line-height: 32px;
+}
+
+.new-incident-container .content form {
+width: 100%;
+max-width: 450px;
+}
+
+.new-incident-container .content form input,
+.new-incident-container .content form textarea {
+    margin-top: 8px;
+}
+
+
+</style>
+
+<div class="new-incident-container">
+    <div class="content">
+        <section>
+            <Logo />
+            <h1>Create a new incident</h1>
+            <p>
+                Describe the incident with details to help you find a hero.
+            </p>
+            <NavLink to="/profile" class="back-link">
+                <FiArrowLeft Size="16" StrokeColor="#e02041" />
+                Go back
+            </NavLink>
+        </section>
+        <EditForm @onsubmit:preventDefault
+                  Model="Command" OnValidSubmit="@HandleSubmit">
+            <PeterLeslieMorris.Blazor.Validation.Validate/>
+            <InputText placeholder="Incident Title"
+                       @bind-Value="Command.Title" disabled="@IsLoading" />
+            <ValidationMessage For=@(() => Command.Title) />
+            <InputTextArea placeholder="Description"
+                       @bind-Value="Command.Description" disabled="@IsLoading" />
+            <ValidationMessage For=@(() => Command.Description) />
+            <InputText placeholder="Amount USD"
+                       @bind-Value="Command.Value" disabled="@IsLoading" />
+            <ValidationMessage For=@(() => Command.Value) />
+            
+            
+         
+
+            <button class="button" type="submit">
+                Create new Incident
+            </button>
+        </EditForm>
+    </div>
+</div>

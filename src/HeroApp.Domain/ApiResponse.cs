@@ -7,6 +7,10 @@ namespace HeroApp.Domain
 {
     public class ApiResponse
     {
+        public ApiResponse()
+        {
+              
+        }
         internal ApiResponse(string message, bool succeeded, IEnumerable<string> errors)
         {
             Message = message;
@@ -56,6 +60,7 @@ namespace HeroApp.Domain
 
     public class ApiResponse<TResult> : ApiResponse where TResult : class
     {
+        public ApiResponse() : base() { }
         ApiResponse(TResult result, string message = "Success") : base(message, true, new string[] { })
         {
             Result = result;
@@ -64,17 +69,21 @@ namespace HeroApp.Domain
         public static ApiResponse<TResult> SuccessFrom(TResult result)
         {
             return new ApiResponse<TResult>(result);
-            {
-            };
+            
         }
         public static ApiResponse<TResult> FailureFrom(string errorMessage)
         {
             return new ApiResponse<TResult>(null, errorMessage);
-            {
-            };
+            
+        }
+
+        public static ApiResponse<TResult> FailureFrom(IEnumerable<string> errors)
+        {
+            return new ApiResponse<TResult>(null, errors.Aggregate((a,p) => $"{a}{Environment.NewLine}{p}"));            
         }
 
 
-        public TResult Result { get; }
+        public TResult Result { get; set; }
+
     }
 }

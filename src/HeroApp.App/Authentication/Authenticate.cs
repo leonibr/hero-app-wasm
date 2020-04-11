@@ -17,11 +17,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using HeroApp.AppShared.Authentication.Authenticate;
+using HeroApp.AppShared.Authentication.Login;
+using HeroApp.App.Services;
 
 namespace HeroApp.App.Authentication
 {
-    public class Authenticate
+    public class Login
     {
 
 
@@ -30,118 +31,51 @@ namespace HeroApp.App.Authentication
 
         public class Handler : IRequestHandler<Command, ApiResponse<Result>>
         {
-            private readonly IHeroContext heroContext;
-            private readonly IWebHostEnvironment env;
-            private readonly SigningConfigurations signingConfigurations;
-            private readonly UserManager<AppUser> userManager;
-            private readonly RoleManager<AppRole> roleManager;
-            private readonly SignInManager<AppUser> signInManager;
-            private readonly TokenConfigurations tokenConfigurations;
+            private readonly IAuthUserService userService;
 
-            public Handler(IHeroContext heroContext,
-                    IWebHostEnvironment env,
-                    SigningConfigurations signingConfigurations,
-                    UserManager<AppUser> userManager,
-                    RoleManager<AppRole> roleManager,
-                    SignInManager<AppUser> signInManager,
-                    TokenConfigurations tokenConfigurations)
+            public Handler(IAuthUserService userService)
             {
-                this.heroContext = heroContext;
-                this.env = env;
-                this.signingConfigurations = signingConfigurations;
-                this.userManager = userManager;
-                this.roleManager = roleManager;
-                this.signInManager = signInManager;
-                this.tokenConfigurations = tokenConfigurations;
+
+
+                this.userService = userService;
             }
             public async Task<ApiResponse<Result>> Handle(Command request, CancellationToken cancellationToken)
             {
-
-
-
-                var userName = request.Username;
-                var userIdentity = await userManager.FindByNameAsync(userName);
-
-                if (userIdentity == null)
+                AppUser user;
+                if (!await userService.UserExists(request.Email))
                 {
-
-                    var newUser = new AppUser()
+                   var resultr = await userService.CreateMinimunUser(userName: request.Email, password: request.Password);
+                   
+                    if (!resultr.Succeeded)
                     {
-                        UserName = request.Username
-                    };
-                    
-                    await userManager.CreateAsync(newUser);
-                    var userProfile = await roleManager.FindByNameAsync(AppProfileConstants.USER);
-                    await userManager.AddToRoleAsync(newUser, AppProfileConstants.USER);
+                        return ApiResponse<Result>.FailureFrom(resultr.Errors.Select(c => c.Description));
 
-
-                    userIdentity = await userManager.FindByNameAsync(request.Username);
-                } else
-                {
-                    return ApiResponse<Result>.FailureFrom("User and/or passord invalid.");
+                    }
                 }
-
-
-                var claims = new List<Claim>() {
-                          new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-                          new Claim(JwtRegisteredClaimNames.UniqueName, request.Username)
-                        };
-
-
-              
-                await signInManager.SignInAsync(userIdentity,
-                    new AuthenticationProperties()
-                    {
-                        AllowRefresh = false,
-                        IsPersistent = false,
-                        ExpiresUtc = DateTimeOffset.Now.AddSeconds(tokenConfigurations.Seconds)
-                    });
-
-
-
-                var roles = await userManager.GetRolesAsync(userIdentity);
-                foreach (var role in roles)
+                else
                 {
-                    claims.Add(new Claim(ClaimTypes.Role, role));
+                    return ApiResponse<Result>.FailureFrom("User already exists, retrive your access code by sending email to contact@heroapp.com");
                 }
-
-                ClaimsIdentity identity = new ClaimsIdentity(
-                    claims
-                );
-
-                DateTime dataCriacao = DateTime.Now;
-                DateTime dataExpiracao = dataCriacao +
-                    TimeSpan.FromSeconds(tokenConfigurations.Seconds);
-
-                var handler = new JwtSecurityTokenHandler();
-                var securityToken = handler.CreateToken(new SecurityTokenDescriptor
-                {
-                    Issuer = tokenConfigurations.Issuer,
-                    Audience = tokenConfigurations.Audience,
-                    SigningCredentials = signingConfigurations.SigningCredentials,
-                    Subject = identity,
-                    NotBefore = dataCriacao,
-                    Expires = dataExpiracao
-
-                });
-                var token = handler.WriteToken(securityToken);
-
-
+                user = await userService.GetUser(request.Email);
+                string token = await userService.GenerateToken(userName: request.Email);
 
                 var result = new Result()
                 {
                     Authenticated = true,
-                    Created = dataCriacao.ToString("yyyy-MM-dd HH:mm:ss"),
-                    Expiration = dataExpiracao.ToString("yyyy-MM-dd HH:mm:ss"),
                     AccessToken = token,
-                    UserName = request.Username,
+                    UserId = user.Id,
                     Message = "OK",
                 };
                 return ApiResponse<Result>.SuccessFrom(result);
 
             }
-              
+
         }
+
+
+
+
+
     }
 
 

@@ -53,14 +53,16 @@ namespace HeroApp.Api
                 configuration: Configuration,
                 environment: Environment);
 
-            services.AddControllersWithViews();
-                    //.AddJsonOptions(opt => {
-                    //    opt.JsonSerializerOptions = new System.Text.Json.JsonSerializerOptions()
-                    //    {
-                    //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-                    //    };
-                    //});
-                services.AddRazorPages();
+            services.AddControllersWithViews()
+                    .AddJsonOptions(opt =>
+                     {
+                         opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                     });
+            services.AddRazorPages()
+                .AddJsonOptions(opt =>
+                {
+                    opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                }); ;
                    
 
             services.Configure<ApiBehaviorOptions>(options =>

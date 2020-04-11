@@ -1,0 +1,68 @@
+﻿@page "/"
+@inherits OwningComponentBase<IHttpService>
+
+<style>
+    .logon-container {
+        width: 100%;
+        max-width: 1120px;
+        height: 100vh;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+        .logon-container section.form {
+            width: 100%;
+            max-width: 350px;
+            margin-right: 30px;
+        }
+
+            .logon-container section.form form h1 {
+                margin-bottom: 32px;
+                font-size: 32px;
+            }
+
+            .logon-container section.form form input + input {
+                margin-top: 8px;
+            }
+</style>
+
+
+<div class="logon-container">
+    <section class="form">
+        <Logo />
+        <EditForm Model="command" OnValidSubmit="@HandleValidSubmit">
+            <h1>Logon please</h1>
+            <PeterLeslieMorris.Blazor.Validation.Validate />
+
+            <InputText id="username"
+                       type="text"
+                       @bind-Value="command.Email"
+                       placeholder="Email" />
+            <ValidationMessage For=@(() => command.Email) />
+            <InputText id="password"
+                       type="password"
+                       @bind-Value="command.Password"
+                       placeholder="Password" />
+            <ValidationMessage For=@(() => command.Password) />
+
+            <button class="button" type="submit">
+                @if (isLoading)
+                {
+                    <Spinner Size="24" />
+                }
+
+                Submit
+            </button>
+
+            <NavLink class="back-link" href="/register">
+
+                I do not have an ID
+            </NavLink>
+        </EditForm>
+    </section>
+    <img src="img/heroes.png" alt="Heroes" />
+</div>
+
+

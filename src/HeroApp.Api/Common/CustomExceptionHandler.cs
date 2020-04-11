@@ -2,6 +2,8 @@
 using HeroApp.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +15,14 @@ namespace HeroApp.Api.Common
 {
     public class CustomExceptionHandlerMiddleware
     {
+        private readonly JsonSerializerOptions jsonOptions = new JsonSerializerOptions() {  PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
         private readonly RequestDelegate _next;
+        private readonly ILogger<CustomExceptionHandlerMiddleware> logger;
 
-        public CustomExceptionHandlerMiddleware(RequestDelegate next)
+        public CustomExceptionHandlerMiddleware(RequestDelegate next, ILogger<CustomExceptionHandlerMiddleware> logger)
         {
             _next = next;
+            this.logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -40,12 +45,29 @@ namespace HeroApp.Api.Common
 
             switch (exception)
             {
+                case DbUpdateException dbUpdateException:
+                    code = HttpStatusCode.Conflict;
+#if !DEBUG
+                    logger.LogError("Erro conflito no banco de dados");
+                    logger.LogError("Erro conflito no banco de dados", dbUpdateException);
+                    result = JsonSerializer.Serialize(ApiResponse.Failure("Erro conflito no banco de dados"), options: jsonOptions);
+#endif
+#if DEBUG
+                    result = JsonSerializer.Serialize(ApiResponse.Failure(dbUpdateException.Message), options: jsonOptions);
+#endif
+
+                    break;
                 case ValidationException validationException:
                     code = HttpStatusCode.BadRequest;                   
-                    result = JsonSerializer.Serialize(ApiResponse.Failure(validationException.Failures));
+                    result = JsonSerializer.Serialize(ApiResponse.Failure(validationException.Failures), options: jsonOptions);
                     break;
 
-
+                case DbRollBackException dbRollBackException:
+                    code = HttpStatusCode.NotImplemented;
+                      result = JsonSerializer.Serialize(ApiResponse.Failure(dbRollBackException.ListStatckTrace), options: jsonOptions);
+                    break;
+                 default:
+                    break;
             }
 
             context.Response.ContentType = "application/json";
@@ -53,7 +75,7 @@ namespace HeroApp.Api.Common
 
             if (string.IsNullOrEmpty(result))
             {
-                result = JsonSerializer.Serialize(ApiResponse.Failure(exception.Message));
+                result = JsonSerializer.Serialize(ApiResponse.Failure(exception.Message), options: jsonOptions);
             }
 
             return context.Response.WriteAsync(result);

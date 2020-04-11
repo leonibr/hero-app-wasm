@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using HeroApp.AppShared.Model;
 using HeroApp.AppShared.Services;
+using HeroApp.Wasm.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,11 +19,30 @@ namespace HeroApp.Wasm.Services
         }
         public async Task<string> GetToken()
         {
-            
-                var local = await storageService.GetItemAsync<LocalUserInfo>(Constants.UserKey);
-                return local?.AccessToken ?? null;
-            
+
+            var local = await storageService.GetItemAsync<LocalUserInfo>(Constants.UserKey);
+            return local?.AccessToken ?? null;
+
         }
-        
+
+        public async Task Clear()
+        {
+            await storageService.RemoveItemAsync(Constants.UserKey);
+        }
+
+        public async Task StoreToken(LocalUserInfo localUserInfo)
+        {
+            try
+            {
+                await storageService.SetItemAsync(Constants.UserKey, localUserInfo);
+            }
+            catch (Exception ex)
+            {
+                DebugPrint.Log("StoreToken");
+                DebugPrint.Log(ex.Message);
+
+                await storageService.ClearAsync();
+            }
+        }
     }
 }
