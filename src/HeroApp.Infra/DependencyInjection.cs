@@ -28,13 +28,18 @@ namespace HeroApp.Infra
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
         {
+
+            var connectionString = Environment.GetEnvironmentVariable("APP_CONNCTION_STRING") ?? configuration.GetConnectionString("PostgreSql");
+
             services.AddDbContext<HeroContext>(options =>
-                options.UseSqlite(
-                    configuration.GetConnectionString("Sqlite"),
-                    b => {
+                options.UseNpgsql(
+                     connectionString,
+                    b =>
+                    {
                         b.MigrationsHistoryTable(Constants.HistoryTableName);
                         b.MigrationsAssembly(typeof(HeroContext).Assembly.FullName);
                     }));
+
 
 
             services.AddDefaultIdentity<AppUser>()
@@ -57,12 +62,12 @@ namespace HeroApp.Infra
 
 
 
-                services.AddTransient<IDateTime, DateTimeService>();
+            services.AddTransient<IDateTime, DateTimeService>();
 
-                services.AddTransient<IIdentityService, IdentityService>();
-           
+            services.AddTransient<IIdentityService, IdentityService>();
 
-           
+
+
 
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -78,12 +83,12 @@ namespace HeroApp.Infra
                 paramsValidation.IssuerSigningKey = signingConfigurations.Key;
                 paramsValidation.ValidAudience = tokenConfigurations.Audience;
                 paramsValidation.ValidIssuer = tokenConfigurations.Issuer;
-       
+
                 paramsValidation.ValidateIssuerSigningKey = true;
 
                 paramsValidation.ValidateLifetime = true;
 
-              
+
                 paramsValidation.ClockSkew = TimeSpan.Zero;
             });
 
@@ -91,9 +96,9 @@ namespace HeroApp.Infra
             {
                 var defaultPolicy = new AuthorizationPolicyBuilder(
                     JwtBearerDefaults.AuthenticationScheme
-                
+
                     ).RequireAuthenticatedUser().Build();
-                
+
 
                 auth.DefaultPolicy = defaultPolicy;
             });

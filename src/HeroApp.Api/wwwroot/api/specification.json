@@ -611,8 +611,8 @@
             }
           },
           "appUserId": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string",
+            "nullable": true
           },
           "owner": {
             "nullable": true,

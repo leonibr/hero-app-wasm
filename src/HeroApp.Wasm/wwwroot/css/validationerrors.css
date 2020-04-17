@@ -7,7 +7,7 @@ div.validation-message {
 ul.validation-errors > li.validation-message,
 div.validation-message {
     list-style: none;
-    padding: 5px 5px;
+    padding: 2px 5px;
     animation: slide-up 0.4s ease;
      
 }

@@ -1,16 +1,28 @@
 version: '2.0'
 services:
   api:
-    container_name: heroappbackend
+    container_name: herodotnet
     restart: always
     build: 
       context: .
       dockerfile: src/HeroApp.Api/Dockerfile
     ports:
-      - "5000:80"
+      - "127.0.0.1:5000:80"
 
+    environment:
+      APP_CONNCTION_STRING: "APP_CONNCTION_STRING"
+    links:
+      - "db:dbserver"
+    depends_on:
+      - db
+  db:
+    container_name: herodotnet_db
+    build: Dockerfile.database
+    restart: always
+
+    
   wasm:
-    container_name: heroappwasm
+    container_name: herowasm
     build: 
         context: .
         dockerfile: src/HeroApp.Wasm/Dockerfile

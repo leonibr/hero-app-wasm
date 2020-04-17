@@ -41,7 +41,10 @@ namespace HeroApp.Api
                 options.AddPolicy(AllowEveryOneCors,
                 builder =>
                 {
-                    builder.WithOrigins("https://localhost:44351", "*")
+                    builder.WithOrigins(
+                        "https://localhost:44351", 
+                        "https://heroappwasm.marques.top",
+                        "*")
                     .AllowAnyMethod()
                     .AllowAnyHeader();
 

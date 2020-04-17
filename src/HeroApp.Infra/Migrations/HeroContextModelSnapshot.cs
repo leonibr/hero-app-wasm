@@ -4,6 +4,7 @@ using HeroApp.Infra;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HeroApp.Infra.Migrations
 {
@@ -14,27 +15,29 @@ namespace HeroApp.Infra.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.3");
+                .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
+                .HasAnnotation("ProductVersion", "3.1.3")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("HeroApp.Domain.AppRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnName("id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnName("concurrency_stamp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasColumnName("name")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
                         .HasColumnName("normalized_name")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id")
@@ -51,67 +54,67 @@ namespace HeroApp.Infra.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnName("id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnName("access_failed_count")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnName("concurrency_stamp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasColumnName("email")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnName("email_confirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnName("lockout_enabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnName("lockout_end")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NormalizedEmail")
                         .HasColumnName("normalized_email")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
                         .HasColumnName("normalized_user_name")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
 
                     b.Property<string>("PasswordHash")
                         .HasColumnName("password_hash")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnName("phone_number")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnName("phone_number_confirmed")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnName("security_stamp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnName("two_factor_enabled")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
                         .HasColumnName("user_name")
-                        .HasColumnType("TEXT")
+                        .HasColumnType("character varying(256)")
                         .HasMaxLength(256);
 
                     b.HasKey("Id")
@@ -132,23 +135,24 @@ namespace HeroApp.Infra.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("Description")
                         .HasColumnName("description")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Ong_Id")
                         .HasColumnName("ong_id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .HasColumnName("title")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
                         .HasColumnName("value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id")
                         .HasName("pk_incidents");
@@ -163,41 +167,37 @@ namespace HeroApp.Infra.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnName("id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
-                    b.Property<long>("AppUserId")
+                    b.Property<string>("AppUserId")
                         .HasColumnName("app_user_id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("text");
 
                     b.Property<string>("City")
                         .HasColumnName("city")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasColumnName("email")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasColumnName("name")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("OwnerId")
-                        .HasColumnName("owner_id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("State")
                         .HasColumnName("state")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("WhatsApp")
                         .HasColumnName("whats_app")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id")
                         .HasName("pk_ongs");
 
-                    b.HasIndex("OwnerId")
-                        .HasName("ix_ongs_owner_id");
+                    b.HasIndex("AppUserId")
+                        .HasName("ix_ongs_app_user_id");
 
                     b.ToTable("ongs");
                 });
@@ -207,20 +207,21 @@ namespace HeroApp.Infra.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnName("claim_type")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
                         .HasColumnName("claim_value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
                         .HasColumnName("role_id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id")
                         .HasName("pk_asp_net_role_claims");
@@ -236,20 +237,21 @@ namespace HeroApp.Infra.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnName("id")
-                        .HasColumnType("INTEGER");
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<string>("ClaimType")
                         .HasColumnName("claim_type")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
                         .HasColumnName("claim_value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnName("user_id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("Id")
                         .HasName("pk_asp_net_user_claims");
@@ -264,22 +266,20 @@ namespace HeroApp.Infra.Migrations
                 {
                     b.Property<string>("LoginProvider")
                         .HasColumnName("login_provider")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(128);
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderKey")
                         .HasColumnName("provider_key")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(128);
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnName("provider_display_name")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnName("user_id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("LoginProvider", "ProviderKey")
                         .HasName("pk_asp_net_user_logins");
@@ -294,11 +294,11 @@ namespace HeroApp.Infra.Migrations
                 {
                     b.Property<string>("UserId")
                         .HasColumnName("user_id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("RoleId")
                         .HasColumnName("role_id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "RoleId")
                         .HasName("pk_asp_net_user_roles");
@@ -313,21 +313,19 @@ namespace HeroApp.Infra.Migrations
                 {
                     b.Property<string>("UserId")
                         .HasColumnName("user_id")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.Property<string>("LoginProvider")
                         .HasColumnName("login_provider")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(128);
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasColumnName("name")
-                        .HasColumnType("TEXT")
-                        .HasMaxLength(128);
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
                         .HasColumnName("value")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "LoginProvider", "Name")
                         .HasName("pk_asp_net_user_tokens");
@@ -347,8 +345,8 @@ namespace HeroApp.Infra.Migrations
                 {
                     b.HasOne("HeroApp.Domain.AppUser", "Owner")
                         .WithMany("MyOngs")
-                        .HasForeignKey("OwnerId")
-                        .HasConstraintName("fk_ongs_asp_net_users_owner_id");
+                        .HasForeignKey("AppUserId")
+                        .HasConstraintName("fk_ongs_asp_net_users_app_user_id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

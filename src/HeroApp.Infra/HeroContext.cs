@@ -51,6 +51,9 @@ namespace HeroApp.Infra
             modelBuilder.Entity<Ong>(table =>
             {
                 table.HasKey(p => p.Id);
+                table.HasOne(p => p.Owner)
+                    .WithMany(c => c.MyOngs)
+                    .HasForeignKey(c => c.AppUserId);
             });
 
 

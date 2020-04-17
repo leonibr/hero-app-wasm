@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HeroApp.Infra.Migrations
 {
@@ -51,7 +52,7 @@ namespace HeroApp.Infra.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     role_id = table.Column<string>(nullable: false),
                     claim_type = table.Column<string>(nullable: true),
                     claim_value = table.Column<string>(nullable: true)
@@ -72,7 +73,7 @@ namespace HeroApp.Infra.Migrations
                 columns: table => new
                 {
                     id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     user_id = table.Column<string>(nullable: false),
                     claim_type = table.Column<string>(nullable: true),
                     claim_value = table.Column<string>(nullable: true)
@@ -92,8 +93,8 @@ namespace HeroApp.Infra.Migrations
                 name: "asp_net_user_logins",
                 columns: table => new
                 {
-                    login_provider = table.Column<string>(maxLength: 128, nullable: false),
-                    provider_key = table.Column<string>(maxLength: 128, nullable: false),
+                    login_provider = table.Column<string>(nullable: false),
+                    provider_key = table.Column<string>(nullable: false),
                     provider_display_name = table.Column<string>(nullable: true),
                     user_id = table.Column<string>(nullable: false)
                 },
@@ -137,8 +138,8 @@ namespace HeroApp.Infra.Migrations
                 columns: table => new
                 {
                     user_id = table.Column<string>(nullable: false),
-                    login_provider = table.Column<string>(maxLength: 128, nullable: false),
-                    name = table.Column<string>(maxLength: 128, nullable: false),
+                    login_provider = table.Column<string>(nullable: false),
+                    name = table.Column<string>(nullable: false),
                     value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -162,15 +163,14 @@ namespace HeroApp.Infra.Migrations
                     whats_app = table.Column<string>(nullable: true),
                     city = table.Column<string>(nullable: true),
                     state = table.Column<string>(nullable: true),
-                    app_user_id = table.Column<long>(nullable: false),
-                    owner_id = table.Column<string>(nullable: true)
+                    app_user_id = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("pk_ongs", x => x.id);
                     table.ForeignKey(
-                        name: "fk_ongs_asp_net_users_owner_id",
-                        column: x => x.owner_id,
+                        name: "fk_ongs_asp_net_users_app_user_id",
+                        column: x => x.app_user_id,
                         principalTable: "asp_net_users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
@@ -181,7 +181,7 @@ namespace HeroApp.Infra.Migrations
                 columns: table => new
                 {
                     id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     title = table.Column<string>(nullable: true),
                     description = table.Column<string>(nullable: true),
                     value = table.Column<string>(nullable: true),
@@ -241,9 +241,9 @@ namespace HeroApp.Infra.Migrations
                 column: "ong_id");
 
             migrationBuilder.CreateIndex(
-                name: "ix_ongs_owner_id",
+                name: "ix_ongs_app_user_id",
                 table: "ongs",
-                column: "owner_id");
+                column: "app_user_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

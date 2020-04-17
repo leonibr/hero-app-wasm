@@ -1,11 +1,6 @@
 ﻿@page "/register"
 @inherits OwningComponentBase<IHttpService>
-@inject Radzen.DialogService dialogService
-@inject NavigationManager Navigator
-@inject ITokenService tokenService
 
-@using AppShared.Authentication.Register
-@using HeroApp.Domain
 <style>
     .register-container {
         width: 100%;
@@ -127,80 +122,6 @@
 
 @code {
 
-    public bool isLoading = false;
-    Command registerCommand = new Command()
-    {
-        Name = "ASDF",
-        Email = "asdf@asdf.com",
-        City = "sadf",
-        ConfirmPassword = "asdfasdf",
-        Password = "asdfasdf",
-        State = "SS",
-        Whatsapp = "asdfasdf"
-    };
-
-
-    void OnMakingRequest(object sender, IsMakingRequestEventArgs args)
-    {
-        isLoading = args.IsLoading;
-        StateHasChanged();
-        Console.WriteLine("isLoading> " + isLoading.ToString());
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        Service.IsMakingRequest += OnMakingRequest;
-        await Task.CompletedTask;
-    }
-
-    async Task HandleRegister()
-    {
-
-        var apiResponse = await Service.Post<Command, ApiResponse<Result>>(registerCommand, "/api/authenticate/register");
-
-
-        if (apiResponse.Succeeded)
-        {
-            await tokenService.StoreToken(new AppShared.Model.LocalUserInfo() {
-                Id = apiResponse.Result.UserId,
-                AccessToken = apiResponse.Result.AccessToken
-            });
-
-        }
-
-
-        try
-        {
-
-            var response = await dialogService.OpenAsync<SimpleConfirm>($"Your access is granted!",
-                 new Dictionary<string, object>() { { "Description", new string[] {
-              //  $"The Id: {apiResponse.Result.UserId} is your identifier",
-                "You will need create your incidents. You will be redirected to your Profile page.",
-                "Keep your password safe!"
-             }  } }
-                );
-
-
-            Navigator.NavigateTo("/profile");
-
-        }
-        catch (Exception ex)
-        {
-            DebugPrint.Log("Error on HandleRegister.");
-            DebugPrint.Log($"HandleRegister:: [] \n{ex.Message}");
-
-            Console.WriteLine(ex.Message);
-        }
-        finally
-        {
-            isLoading = false;
-        }
-
-    }
-
-    public void Dispose()
-    {
-        Service.IsMakingRequest -= OnMakingRequest;
-    }
+   
 
 }

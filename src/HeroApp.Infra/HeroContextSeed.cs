@@ -83,19 +83,7 @@ namespace HeroApp.Infra
             }
 
 
-            //if (!context.PersistedGrants.Any())
-            //{
-            //    context.PersistedGrants.Add(new IdentityServer4.EntityFramework.Entities.PersistedGrant()
-            //    {
-            //        ClientId = "33333333-3333-3333-33333333333333333",
-            //        Key = "secret".Sha256(),
-            //        Type = GrantType.ResourceOwnerPassword,
-            //        Data = "HeroContextApi",
-            //        CreationTime = DateTime.Now,
-            //        SubjectId = "HeroApp.Wasm Client" 
-            //    });
-            //    await context.SaveChangesAsync();
-            //}
+
 
         }
     }

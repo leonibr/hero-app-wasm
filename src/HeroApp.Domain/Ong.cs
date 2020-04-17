@@ -22,7 +22,7 @@ namespace HeroApp.Domain
 
         public virtual ICollection<Incident> Incidents { get; set; }
 
-        public long AppUserId { get; set; }
+        public string AppUserId { get; set; }
         public AppUser Owner { get; set; }
 
        
