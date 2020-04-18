@@ -1,3 +1,7 @@
 ﻿FROM postgres:12.2
 
-COPY HeroApp.Infra/initdb.sql /docker-entrypoint-initdb.d/
+COPY src/HeroApp.Infra/initdb.sql /docker-entrypoint-initdb.d/
+
+
+ENV POSTGRES_USER=${POSTGRES_USER}
+ENV POSTGRES_PASSWORD=${POSTGRES_PASSWORD}

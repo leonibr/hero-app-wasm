@@ -26,8 +26,8 @@ WORKDIR /build
 FROM nginx:1.17.1-alpine
 COPY --from=front /build/wwwroot /usr/share/nginx/html
 
-ENV VIRTUAL_HOST heroappwasm.marques.top
-ENV LETSENCRYPT_HOST heroappwasm.marques.top
+ENV VIRTUAL_HOST "${WASM_URL}"
+ENV LETSENCRYPT_HOST "${WASM_URL}"
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

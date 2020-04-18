@@ -10,22 +10,32 @@ services:
       - "127.0.0.1:5000:80"
 
     environment:
-      APP_CONNCTION_STRING: "APP_CONNCTION_STRING"
+      DB_HOST: dbserver
+      DB_DATABASE: herouser
+      DB_USER: herouser
+      DB_PASS: heropass
+
     links:
       - "db:dbserver"
     depends_on:
       - db
   db:
     container_name: herodotnet_db
-    build: Dockerfile.database
+    build:
+      context: .
+      dockerfile: Dockerfile.database
     restart: always
-
+    environment: 
+      POSTGRES_USER: herouser
+      POSTGRES_PASSWORD: heropass
     
   wasm:
     container_name: herowasm
     build: 
-        context: .
-        dockerfile: src/HeroApp.Wasm/Dockerfile
+      context: .
+      dockerfile: src/HeroApp.Wasm/Dockerfile
+    environment: 
+      WASM_URL: heroappwasm.marques.top
     ports: 
       - "5502:80"
     depends_on:

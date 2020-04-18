@@ -28,6 +28,13 @@ FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 as runtime
 WORKDIR /app
 COPY --from=back /build .
 
+
+ENV DB_DATABASE=${DB_DATABASE}
+ENV DB_HOST=${DB_HOST}
+ENV DB_USER=${DB_USER}
+ENV DB_PASS=${DB_PASS}
+
+ENV APP_CONNCTION_STRING Database=${DB_DATABASE};Server=${DB_HOST};User Id=${DB_USER};Password=${DB_PASS};Pooling=true;
 ENV VIRTUAL_HOST heroappwasm-back.marques.top
 ENV LETSENCRYPT_HOST heroappwasm-back.marques.top
  

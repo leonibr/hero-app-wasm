@@ -43,8 +43,10 @@ namespace HeroApp.Api
                 {
                     builder.WithOrigins(
                         "https://localhost:44351", 
+                        "https://localhost:5502",
                         "https://heroappwasm.marques.top",
-                        "*")
+                        "*"
+                        )
                     .AllowAnyMethod()
                     .AllowAnyHeader();
 
